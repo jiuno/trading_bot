@@ -52,7 +52,6 @@ class BinanceFuturesClient:
         candles = []
 
         if raw_candles is not None:
-            logger.info('Raw data received')
             for candle in raw_candles:
                 candles.append([candle[0],
                                 float(candle[1]),

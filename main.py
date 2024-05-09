@@ -29,12 +29,13 @@ logger.addHandler(stream_handler)
 
 if __name__ == '__main__':
     
-    binance = BinanceFuturesClient(True)
+    binance = BinanceFuturesClient(public_key="81ce10e167a9d66cc90196cfd855e9663520c5c01fcb0ff9d1631e7339acca14",
+                                   secret_key="143bdd888d0c98e13511ffe71dc229ae393c9997686136b3c16b632494a589b1",
+                                   testnet=True)
     #pp.pprint(binance.get_contracts())
     #pp.pprint(binance.get_bid_ask(symbol='BTCUSDT'))
-    pp.pprint(binance.get_historical_candles('BTCUSDT', "1h"))
+    pp.pprint(binance.get_balances())
 
     root = tk.Tk()
 
     root.mainloop()
-

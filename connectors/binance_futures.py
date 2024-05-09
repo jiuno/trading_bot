@@ -1,23 +1,42 @@
 import logging
+import time
 import requests
-import pprint
+import hmac
+import hashlib
+from urllib.parse import urlencode
 
 
 logger = logging.getLogger()
 
 class BinanceFuturesClient:
-    def __init__(self, testnet):
+    def __init__(self, public_key,secret_key,testnet):
         if testnet:
             self.base_url = 'https://testnet.binancefuture.com'
         else:
             self.base_url = 'https://fapi.binance.com'
-        logger.info("Binance Futures Client succesfully started")
+
+        self.public_key = public_key
+
+        self.secret_key = secret_key
+
+        self.headers = {'X-MBX-APIKEY': self.public_key}
 
         self.prices = dict()
     
+        logger.info("Binance Futures Client succesfully started")
+    
+    def generate_signature(self, data):
+        return hmac.new(key=self.secret_key.encode() ,msg=urlencode(data).encode(), digestmod= hashlib.sha256).hexdigest()
+
+    
     def make_request(self, method, endpoint, data):
         if method == 'GET':
-           res = requests.get(self.base_url + endpoint, params=data)
+           res = requests.get(self.base_url + endpoint, params=data, headers= self.headers)
+        elif method == 'POST':
+            res = requests.post(self.base_url + endpoint, params=data, headers= self.headers)
+        elif method == 'DELETE':
+            res = requests.delete(self.base_url + endpoint, params=data, headers= self.headers)
+
         else:
             raise ValueError()
         
@@ -77,4 +96,37 @@ class BinanceFuturesClient:
                 self.prices[symbol]['ask'] = float(order_book_data['askPrice'])
         
         return self.prices[symbol]
+    
+    def get_balances(self):
+        data = dict()
+        data['timestamp'] = int(time.time()*1000)
+        data['signature'] = self.generate_signature(data)
+
+        balances = dict()
+
+        account_data = self.make_request('GET',"/fapi/v2/account", data)
+
+        if account_data is not None:
+            for a in account_data['assets']:
+                balances[a['asset']] = a
+
+        return balances
+    
+    def place_order(self):
+        return
+    
+    def cancel_order(self):
+        return
+    
+    def get_order_status(self, symbol, order_id):
+
+        data = dict()
+        data['timestamp'] = int(time.time()*1000)
+        data['symbol'] = symbol
+        data['orderId'] = order_id
+        data['signature'] = self.generate_signature(data)
+        
+        order_status = self.make_request(method="GET", endpoint="/fapi/v1/order", data=data)
+        
+        return order_status
     

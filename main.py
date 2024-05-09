@@ -34,8 +34,10 @@ if __name__ == '__main__':
                                    testnet=True)
     #pp.pprint(binance.get_contracts())
     #pp.pprint(binance.get_bid_ask(symbol='BTCUSDT'))
-    pp.pprint(binance.get_balances())
-
+    #pp.pprint(binance.get_balances())
+    #pp.pprint(binance.place_order("BTCUSDT", "BUY", 0.01,"LIMIT",20000,"GTC"))
+    #pp.pprint(binance.cancel_order(symbol="BTCUSDT",order_id="4034157129"))
+    #pp.pprint(binance.get_order_status(symbol="BTCUSDT",order_id="4034157129"))
     root = tk.Tk()
 
     root.mainloop()

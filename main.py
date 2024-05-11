@@ -32,12 +32,7 @@ if __name__ == '__main__':
     binance = BinanceFuturesClient(public_key="81ce10e167a9d66cc90196cfd855e9663520c5c01fcb0ff9d1631e7339acca14",
                                    secret_key="143bdd888d0c98e13511ffe71dc229ae393c9997686136b3c16b632494a589b1",
                                    testnet=True)
-    #pp.pprint(binance.get_contracts())
-    #pp.pprint(binance.get_bid_ask(symbol='BTCUSDT'))
-    #pp.pprint(binance.get_balances())
-    #pp.pprint(binance.place_order("BTCUSDT", "BUY", 0.01,"LIMIT",20000,"GTC"))
-    #pp.pprint(binance.cancel_order(symbol="BTCUSDT",order_id="4034157129"))
-    #pp.pprint(binance.get_order_status(symbol="BTCUSDT",order_id="4034157129"))
-    root = tk.Tk()
 
-    root.mainloop()
+#    root = tk.Tk()
+
+#    root.mainloop()

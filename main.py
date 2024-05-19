@@ -32,6 +32,7 @@ if __name__ == '__main__':
     binance = BinanceFuturesClient(public_key="81ce10e167a9d66cc90196cfd855e9663520c5c01fcb0ff9d1631e7339acca14",
                                    secret_key="143bdd888d0c98e13511ffe71dc229ae393c9997686136b3c16b632494a589b1",
                                    testnet=True)
+    #binance.get_balances()
 
 #    root = tk.Tk()
 

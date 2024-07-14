@@ -40,7 +40,7 @@ class BinanceFuturesClient:
 
         t = threading.Thread(target=self.start_ws)
 
-        #t.start() -- prendo y apago el websocket para tener info en tiempo real.
+        t.start() # prendo y apago el websocket para tener info en tiempo real.
     
         logger.info("Binance Futures Client succesfully started")
     
@@ -74,7 +74,15 @@ class BinanceFuturesClient:
 
         if exchange_info is not None:
             for contract_data in exchange_info['symbols']:
-                contracts[contract_data['pair']] = Contract(contract_data)
+                keys_list = list(contracts.keys())
+                print(contract_data["symbol"])
+                if (keys_list.count(contract_data["pair"]) == 0):  
+                    contracts[contract_data['pair']] = Contract(contract_data)
+                else:
+                    print(f'Key {contract_data["pair"]} already exists')
+                    #El symbol "BTCUSDT_240927" tiene el pair BTCUSDT. Por lo que pisaba
+                    #El pair original de BTCUSDT. Despues en el suscribe se usa el symbol y
+                    #da cualquier cosa. Lo omito porque no se que es ni lo necesito.
         
         return contracts
 
@@ -196,7 +204,7 @@ class BinanceFuturesClient:
         logger.error(f"Binance connection error: {msg}")
 
     def on_message(self,ws, msg:str):
-#        print(msg)
+        #print(msg)
 
         data = json.loads(msg)
 
@@ -222,6 +230,7 @@ class BinanceFuturesClient:
         data['params'].append(contract.symbol.lower() + "@bookTicker")
         data["id"] = self.id
 
+        print(json.dumps(data))
         self.ws.send(json.dumps(data))
         
         self.id += 1

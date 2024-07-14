@@ -134,7 +134,7 @@ class BinanceFuturesClient:
 
         return balances
     
-    def place_order(self, contract:Contract, side:str, quantity:float, order_type:str, price=None, tif=None) -> OrderStatus:
+    def place_order(self, contract:Contract, side:str, quantity:float, order_type:str, price=None, tif=None) -> OrderStatus|None:
         data = dict()
         data['symbol'] = contract.symbol
         data['side'] = side
@@ -155,7 +155,7 @@ class BinanceFuturesClient:
             
         return order_status
     
-    def cancel_order(self, contract:Contract, order_id:int) -> OrderStatus:
+    def cancel_order(self, contract:Contract, order_id:int) -> OrderStatus|None:
         data = dict()
         data['orderid'] = order_id
         data ['symbol'] = contract.symbol
@@ -169,7 +169,7 @@ class BinanceFuturesClient:
         
         return order_status
     
-    def get_order_status(self, contract:Contract, order_id:int) -> OrderStatus:
+    def get_order_status(self, contract:Contract, order_id:int) -> OrderStatus|None:
 
         data = dict()
         data['timestamp'] = int(time.time()*1000)
@@ -231,7 +231,7 @@ class BinanceFuturesClient:
         data["id"] = self.id
 
         print(json.dumps(data))
-        self.ws.send(json.dumps(data))
+        self.ws.send(json.dumps(data)) # type: ignore
         
         self.id += 1
         

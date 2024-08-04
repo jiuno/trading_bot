@@ -22,7 +22,9 @@ class Contract:
         self.quote_asset = contract_info['quoteAsset']
         self.price_decimals = contract_info['pricePrecision']
         self.quantity_decimals = contract_info['quantityPrecision']
-
+        #self.tick_size = 1 / pow(10, contract_info['pricePrecision']) #Tick size no sirve el que trae, hay que modificarlo https://www.binance.com/en/support/announcement/updates-on-the-tick-size-for-btc-usd%E2%93%A2-m-perpetual-futures-contracts-81e6795b0bae49828cbd52479094a987
+        self.tick_size = 0.1 #Hardcodeo el tick_size para redondear, por ahora no necesito tanta precision para comprar.
+        self.lot_size = 1 / pow(10, contract_info['quantityPrecision'])
 class OrderStatus:
     def __init__(self,order_info) -> None:
         self.order_id = order_info['orderId']

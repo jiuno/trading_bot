@@ -2,6 +2,8 @@ import tkinter as tk
 import logging
 import pprint as pp
 from connectors.binance_futures import BinanceFuturesClient
+from interface.root_component import Root
+
 
 logger = logging.getLogger()
 
@@ -33,14 +35,14 @@ if __name__ == '__main__':
                                    secret_key="143bdd888d0c98e13511ffe71dc229ae393c9997686136b3c16b632494a589b1",
                                    testnet=True)
 
-    print(binance.place_order(contract = binance.contracts['BTCUSDT']
-                              ,order_type = 'LIMIT'
-                              ,quantity=0.01
-                              ,side = 'BUY'
-                              ,price = 65000.46
-                              ,tif = 'GTD'
-                              ,gtd = 0))
+    # print(binance.place_order(contract = binance.contracts['BTCUSDT']
+    #                           ,order_type = 'LIMIT'
+    #                           ,quantity=0.01
+    #                           ,side = 'BUY'
+    #                           ,price = 65000.46
+    #                           ,tif = 'GTD'
+    #                           ,gtd = 0))
 
-#    root = tk.Tk()
+    root = Root()
 
-#    root.mainloop()
+    root.mainloop()

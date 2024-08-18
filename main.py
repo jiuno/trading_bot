@@ -43,6 +43,6 @@ if __name__ == '__main__':
     #                           ,tif = 'GTD'
     #                           ,gtd = 0))
 
-    root = Root()
+    root = Root(binance)
 
     root.mainloop()

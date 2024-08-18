@@ -29,6 +29,7 @@ class BinanceFuturesClient:
 
         self.prices = dict()
 
+        self.logs = [] # items to loop and display on UI
 
         self.contracts = self.get_contracts()
         
@@ -38,11 +39,15 @@ class BinanceFuturesClient:
 
         self.ws = None
 
-#        t = threading.Thread(target=self._start_ws)
+        t = threading.Thread(target=self._start_ws)
 
-#        t.start() # prendo y apago el websocket para tener info en tiempo real.
+        t.start() # prendo y apago el websocket para tener info en tiempo real.
     
         logger.info("Binance Futures Client succesfully started")
+
+    def _add_log(self, msg:str):
+        logger.info("%s",msg)
+        self.logs.append({"log":msg, "displayed": False})
     
     def _generate_signature(self, data:typing.Dict) -> str:
         return hmac.new(key=self._secret_key.encode() ,msg=urlencode(data).encode(), digestmod= hashlib.sha256).hexdigest()
@@ -198,6 +203,7 @@ class BinanceFuturesClient:
         return order_status
     
     def _start_ws(self):
+        websocket.enableTrace(True)
         self.ws = websocket.WebSocketApp(self._wss_url,
                                     on_open    = self._on_open,
                                     on_close   = self._on_close,
@@ -222,13 +228,13 @@ class BinanceFuturesClient:
         logger.error(f"Binance connection error: {msg}")
 
     def _on_message(self,ws, msg:str):
-        #print(msg)
 
         data = json.loads(msg)
 
         if "e" in data:
             if data["e"] == "bookTicker":
-
+                
+                print(f"response from _on_message, symbol: {data['s']}")
                 symbol = data["s"]
 
                 if symbol not in self.prices:
@@ -237,6 +243,14 @@ class BinanceFuturesClient:
                 else:
                     self.prices[symbol]['bid'] = float(data['b'])
                     self.prices[symbol]['ask'] = float(data['a'])
+
+                if symbol == "BTCUSDT":
+                    self._add_log(symbol 
+                                + " " 
+                                + str(self.prices[symbol]['bid']) 
+                                + " / " 
+                                + str(self.prices[symbol]['ask'])
+                                )
 
                 print(self.prices[symbol])
 
@@ -251,6 +265,7 @@ class BinanceFuturesClient:
 
         try:
             self.ws.send(json.dumps(data)) # type: ignore
+            print("suscription succesful")
         except Exception as e:
             logger.error(f'Websocket error while subscribing to {contract.symbol}: \n{e}')            
             return None

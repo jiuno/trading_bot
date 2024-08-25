@@ -243,13 +243,13 @@ class BinanceFuturesClient:
                     self.prices[symbol]['bid'] = float(data['b'])
                     self.prices[symbol]['ask'] = float(data['a'])
 
-                if symbol == "BTCUSDT" or symbol == 'ETHUSDT':
-                    self._add_log(symbol 
-                                + " " 
-                                + str(self.prices[symbol]['bid']) 
-                                + " / " 
-                                + str(self.prices[symbol]['ask'])
-                                )
+                # if symbol == "BTCUSDT" or symbol == 'ETHUSDT':
+                #     self._add_log(symbol 
+                #                 + " " 
+                #                 + str(self.prices[symbol]['bid']) 
+                #                 + " / " 
+                #                 + str(self.prices[symbol]['ask'])
+                #                 )
 
                 print(self.prices[symbol])
 

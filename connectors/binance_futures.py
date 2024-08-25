@@ -203,7 +203,7 @@ class BinanceFuturesClient:
         return order_status
     
     def _start_ws(self):
-        websocket.enableTrace(True)
+        #websocket.enableTrace(True) -- Debugger logs
         self.ws = websocket.WebSocketApp(self._wss_url,
                                     on_open    = self._on_open,
                                     on_close   = self._on_close,
@@ -234,7 +234,6 @@ class BinanceFuturesClient:
         if "e" in data:
             if data["e"] == "bookTicker":
                 
-                print(f"response from _on_message, symbol: {data['s']}")
                 symbol = data["s"]
 
                 if symbol not in self.prices:
@@ -244,7 +243,7 @@ class BinanceFuturesClient:
                     self.prices[symbol]['bid'] = float(data['b'])
                     self.prices[symbol]['ask'] = float(data['a'])
 
-                if symbol == "BTCUSDT":
+                if symbol == "BTCUSDT" or symbol == 'ETHUSDT':
                     self._add_log(symbol 
                                 + " " 
                                 + str(self.prices[symbol]['bid']) 
@@ -265,7 +264,7 @@ class BinanceFuturesClient:
 
         try:
             self.ws.send(json.dumps(data)) # type: ignore
-            print("suscription succesful")
+            print("suscription success  ful")
         except Exception as e:
             logger.error(f'Websocket error while subscribing to {contract.symbol}: \n{e}')            
             return None

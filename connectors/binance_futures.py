@@ -250,7 +250,6 @@ class BinanceFuturesClient:
                 #                 + " / " 
                 #                 + str(self.prices[symbol]['ask'])
                 #                 )
-
                 print(self.prices[symbol])
 
 

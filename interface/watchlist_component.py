@@ -32,10 +32,11 @@ class Watchlist(tk.Frame):
                                     #Each key of a specific dictionary/column will be a row.
                                     #Each row will belong to a specific symbol.
 
-        self._headers = ['symbol','exchange','bid','ask'] 
+        self._headers = ['symbol','exchange','bid','ask','remove'] 
 
-        for i, e in enumerate(self._headers):
-            header = tk.Label(self._table_frame, text=e.capitalize(), bg=BG_COLOR, fg=FG_COLOR, font=BOLD_FONT)
+        for i, h in enumerate(self._headers):
+            header = tk.Label(self._table_frame, text=h.capitalize() if h != 'remove' else "",
+                                bg=BG_COLOR, fg=FG_COLOR, font=BOLD_FONT)
             header.grid(row=0,column=i)
         
         for h in self._headers:
@@ -45,12 +46,14 @@ class Watchlist(tk.Frame):
 
         self._body_index = 1 #First row are for headers.
 
+    def _remove_symbol(self, b_index: int):
+        for h in self._headers:
+            self.body_widgets[h][b_index].grid_forget()
+        del self.body_widgets[h][b_index]
 
-    def _add_binance_symbol(self,event):
-        symbol = event.widget.get()
-        if symbol in self.binance_symbols:
-            self._add_symbol(symbol, 'Binance')
-            event.widget.delete(0,tk.END) #Deletes what is in the entry box.
+
+        return None
+
 
     def _add_symbol(self, symbol: str, exchange: str):
         b_index = self._body_index #Rename to a shorter version
@@ -94,10 +97,24 @@ class Watchlist(tk.Frame):
         
         self.body_widgets['ask'][b_index].grid(row=b_index,column = 3)
 
-        self._body_index += 1
+        self.body_widgets['remove'][b_index] = tk.Button(self._table_frame,
+                                                        text = "X",
+                                                        bg = "darkred",
+                                                        fg = FG_COLOR,
+                                                        font = GLOBAL_FONT,
+                                                        command=lambda: self._remove_symbol(b_index)) #lambda only for callback functions that need args. Else it will execute when add symbol is called.
         
+        self.body_widgets['remove'][b_index].grid(row=b_index,column = 4)
+
+        self._body_index += 1
+
 
         
         
         return None
     
+    def _add_binance_symbol(self,event):
+        symbol = event.widget.get()
+        if symbol in self.binance_symbols:
+            self._add_symbol(symbol, 'Binance')
+            event.widget.delete(0,tk.END) #Deletes what is in the entry box.

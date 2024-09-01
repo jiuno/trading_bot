@@ -28,17 +28,76 @@ class Watchlist(tk.Frame):
         self._binance_entry.bind('<Return>', self._add_binance_symbol)
         self._binance_entry.grid(row = 1, column = 0)
 
-        self._headers = ['symbol','exchange','bid','ask']
+        self.body_widgets = dict()  #Each column of headers is a column and will be stored as a dictionary. 
+                                    #Each key of a specific dictionary/column will be a row.
+                                    #Each row will belong to a specific symbol.
+
+        self._headers = ['symbol','exchange','bid','ask'] 
 
         for i, e in enumerate(self._headers):
             header = tk.Label(self._table_frame, text=e.capitalize(), bg=BG_COLOR, fg=FG_COLOR, font=BOLD_FONT)
             header.grid(row=0,column=i)
+        
+        for h in self._headers:
+            self.body_widgets[h] = dict()
+            if h in ["bid","ask"]:
+                self.body_widgets[h+"_var"] = dict() 
 
-    def _add_symbol(self, symbol: str, exchange: str):
-        return None
-    
+        self._body_index = 1 #First row are for headers.
+
+
     def _add_binance_symbol(self,event):
         symbol = event.widget.get()
         if symbol in self.binance_symbols:
             self._add_symbol(symbol, 'Binance')
             event.widget.delete(0,tk.END) #Deletes what is in the entry box.
+
+    def _add_symbol(self, symbol: str, exchange: str):
+        b_index = self._body_index #Rename to a shorter version
+
+        self.body_widgets['symbol'][b_index] = tk.Label(self._table_frame,
+                                                        text=symbol,
+                                                        bg = BG_COLOR,
+                                                        fg = FG_COLOR_2,
+                                                        font = GLOBAL_FONT)
+        self.body_widgets['symbol'][b_index].grid(row=b_index,column = 0)
+
+        self.body_widgets['exchange'][b_index] = tk.Label(self._table_frame,
+                                                        text=exchange,
+                                                        bg = BG_COLOR,
+                                                        fg = FG_COLOR_2,
+                                                        font = GLOBAL_FONT)
+        
+
+        
+        self.body_widgets['exchange'][b_index].grid(row=b_index,column = 1)
+
+        self.body_widgets['bid_var'][b_index] = tk.StringVar()
+
+        self.body_widgets['bid'][b_index] = tk.Label(self._table_frame,
+                                                        textvariable=self.body_widgets['bid_var'][b_index],
+                                                        bg = BG_COLOR,
+                                                        fg = FG_COLOR_2,
+                                                        font = GLOBAL_FONT)
+        
+        self.body_widgets['bid'][b_index].grid(row=b_index,column = 2)
+
+
+
+        self.body_widgets['ask_var'][b_index] = tk.StringVar()
+
+        self.body_widgets['ask'][b_index] = tk.Label(self._table_frame,
+                                                        textvariable=self.body_widgets['ask_var'][b_index],
+                                                        bg = BG_COLOR,
+                                                        fg = FG_COLOR_2,
+                                                        font = GLOBAL_FONT)
+        
+        self.body_widgets['ask'][b_index].grid(row=b_index,column = 3)
+
+        self._body_index += 1
+        
+
+        
+        
+        return None
+    

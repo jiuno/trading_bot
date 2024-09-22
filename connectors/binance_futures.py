@@ -90,10 +90,13 @@ class BinanceFuturesClient:
 
         if exchange_info is not None:
             for contract_data in exchange_info['symbols']:
-                keys_list = list(contracts.keys())
-                #print(contract_data["symbol"])
-                if (keys_list.count(contract_data["pair"]) == 0):  
-                    contracts[contract_data['pair']] = Contract(contract_data)
+                contracts[contract_data['symbol']] = Contract(contract_data)
+
+
+#                keys_list = list(contracts.keys())
+#                #print(contract_data["symbol"])
+#                if (keys_list.count(contract_data["pair"]) == 0):  
+#                    contracts[contract_data['pair']] = Contract(contract_data)
                 #else:
                 #    print(f'Key {contract_data["pair"]} already exists')
                     #El symbol "BTCUSDT_240927" tiene el pair BTCUSDT. Por lo que pisaba
@@ -214,7 +217,7 @@ class BinanceFuturesClient:
                 self.ws.run_forever()
             except Exception as e:
                 logger.error(f'Binance error in run_forever() method: \n{e}')
-            time.sleep(5)
+                time.sleep(5)
 
     def _on_open(self, ws):
         logger.info("Binance connection opened")
@@ -250,7 +253,7 @@ class BinanceFuturesClient:
                 #                 + " / " 
                 #                 + str(self.prices[symbol]['ask'])
                 #                 )
-                print(self.prices[symbol])
+                print(symbol,": ",self.prices[symbol])
 
 
     def subscribe_channel(self, contracts: typing.List[Contract], channel: str):
@@ -263,7 +266,7 @@ class BinanceFuturesClient:
 
         try:
             self.ws.send(json.dumps(data)) # type: ignore
-            print("suscription success  ful")
+            print("suscription successful")
         except Exception as e:
             logger.error(f'Websocket error while subscribing to {contract.symbol}: \n{e}')            
             return None

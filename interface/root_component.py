@@ -1,6 +1,9 @@
 from interface.styling import *
 import tkinter as tk
 
+import logging
+
+
 import time
 
 from interface.logging_component import Logging
@@ -8,6 +11,8 @@ from connectors.binance_futures import BinanceFuturesClient
 
 from interface.watchlist_component import Watchlist
 
+
+logger = logging.getLogger()
 
 class Root(tk.Tk):
     def __init__(self, binance:BinanceFuturesClient):
@@ -38,10 +43,47 @@ class Root(tk.Tk):
 #        self._logging_frame.add_log('2 seconds have passed since last log message.')
 
     def _update_ui(self):
+
+        #Logs
+
         for log in self.binance.logs:
             if not log['displayed']:
                 self._logging_frame.add_log(log['log'])
                 log['displayed'] = True
+
+        #Watchlist prices
+        try:
+            for key, value in self._watchlist_frame.body_widgets['symbol'].items(): #To loop by each element/row
+
+                symbol = self._watchlist_frame.body_widgets['symbol'][key].cget('text')
+                exchange = self._watchlist_frame.body_widgets['exchange'][key].cget('text')
+
+                if exchange == 'Binance':
+                    if symbol not in self.binance.contracts:
+                        continue
+
+                    if symbol not in self.binance.prices:
+                        self.binance.get_bid_ask(self.binance.contracts[symbol])
+                        continue
+
+                    precision = self.binance.contracts[symbol].price_decimals
+                    
+                    prices = self.binance.prices[symbol]
+
+                else:
+                    continue
+
+                if prices['bid'] is not None:
+                    price_str = "{0:.{prec}f}".format(prices['bid'], prec=precision)
+                    self._watchlist_frame.body_widgets['bid_var'][key].set(price_str)
+                if prices['ask'] is not None:
+                    price_str = "{0:.{prec}f}".format(prices['ask'], prec=precision)
+                    self._watchlist_frame.body_widgets['ask_var'][key].set(price_str)
+        
+        except RuntimeError as e:
+            logger.error(f"Error while looping through watchlist dictionary: {e}")
+
+
         
         self.after(1500, self._update_ui)
         

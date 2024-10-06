@@ -10,6 +10,7 @@ from interface.logging_component import Logging
 from connectors.binance_futures import BinanceFuturesClient
 
 from interface.watchlist_component import Watchlist
+from interface.strategy_component import StrategyEditor
 from interface.trades_component import TradesWatch
 
 
@@ -34,6 +35,9 @@ class Root(tk.Tk):
 
         self._logging_frame = Logging(self._left_frame, bg = BG_COLOR)
         self._logging_frame.pack(side = tk.TOP )
+
+        self._strategy_frame = StrategyEditor(self._right_frame, bg = BG_COLOR)
+        self._strategy_frame.pack(side = tk.TOP )
 
         self._trades_frame = TradesWatch(self._right_frame, bg = BG_COLOR)
         self._trades_frame.pack(side = tk.TOP )

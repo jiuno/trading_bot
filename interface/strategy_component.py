@@ -59,9 +59,10 @@ class StrategyEditor(tk.Frame):
         for col, base_param in enumerate(self._base_params):
             code_name = base_param['code_name']
             if base_param['widget'] == tk.OptionMenu:
-                self.body_widgets[code_name][b_index] = tk.StringVar
+                self.body_widgets[code_name + "_var"][b_index] = tk.StringVar()
+                self.body_widgets[code_name + "_var"][b_index].set(base_param['values'][0])
                 self.body_widgets[code_name][b_index] = tk.OptionMenu(  self._table_frame,
-                                                                        self.body_widgets[code_name][b_index],
+                                                                        self.body_widgets[code_name + "_var"][b_index],
                                                                         *base_param['values'])
                 self.body_widgets[code_name][b_index].config(width = base_param['width'])
 
@@ -88,6 +89,20 @@ class StrategyEditor(tk.Frame):
         return
 
     def _show_popup(self, b_index: int):
+
+        x = self.body_widgets['parameters'][b_index].winfo_rootx()
+        y = self.body_widgets['parameters'][b_index].winfo_rooty()
+        self._popup_window = tk.Toplevel(self)
+        self._popup_window.title('Parameters para el bicho')
+
+        self._popup_window.config(bg=BG_COLOR)
+        self._popup_window.attributes("-topmost","true")
+        self._popup_window.grab_set()
+
+        self._popup_window.geometry(f'{x-80}+{y*+30}') #Donde quiero que aparezca el popup, relativo al boton.
+
+        strat_selected = self.body_widgets['strategy_type_var'][b_index].get()
+
         return
 
     def _switch_strategy(self, b_index: int):

@@ -14,14 +14,14 @@ class StrategyEditor(tk.Frame):
 
 
         self._commands_frame = tk.Frame(self, bg=BG_COLOR)
-        self._commands_frame.pack(side=tk.TOP)
+        self._commands_frame.pack(side=tk.LEFT)
 
         self._table_frame = tk.Frame(self, bg=BG_COLOR)
-        self._table_frame.pack(side=tk.TOP)
+        self._table_frame.pack(side=tk.LEFT)
 
         self._add_button = tk.Button(self._commands_frame, text='Add strategy', font=GLOBAL_FONT
                                      ,command=self._add_strategy_row, bg=BG_COLOR_2 ,fg=FG_COLOR)
-        self._add_button.pack(side=tk.TOP)
+        self._add_button.pack(side=tk.LEFT)
 
         self.body_widgets = dict()  #Each column of headers is a column and will be stored as a dictionary. 
                                     #Each key of a specific dictionary/column will be a row.
@@ -30,15 +30,15 @@ class StrategyEditor(tk.Frame):
         self._headers = ['Strategy','Contract','Timeframe','Balance %', 'TP %' ,'SL %'] 
 
         self._base_params = [
-            {"code_name": "strategy_type","widget": tk.OptionMenu, 'data_type': str, 'values':['Technical','Breakout'], 'width': 7},
-            {"code_name": "contract","widget": tk.OptionMenu, 'data_type': str, 'values': self._all_contracts, 'width': 7},            
-            {"code_name": "timeframe","widget": tk.OptionMenu, 'data_type': str, 'values': self._all_timeframes, 'width': 7},
-            {"code_name": "balance_pct","widget": tk.Entry, 'data_type': float, 'width': 7},
-            {"code_name": "take_profit","widget": tk.Entry, 'data_type': float, 'width': 7},
-            {"code_name": "stop_loss","widget": tk.Entry, 'data_type': float, 'width': 7},
-            {"code_name": "parameters","widget": tk.Button, 'data_type': float, 'text':'Paremeters', 'bg':BG_COLOR_2, 'command': self._show_popup},
-            {"code_name": "activation","widget": tk.Button, 'data_type': float, 'text':'OFF', 'bg':'darkred', 'command': self._switch_strategy},
-            {"code_name": "delete","widget": tk.Button, 'data_type': float, 'text':'X', 'bg':'darkred', 'command': self._delete_row},
+            {"code_name": "strategy_type","widget": tk.OptionMenu, 'data_type': str, 'values':['Technical','Breakout'], 'width': 5},
+            {"code_name": "contract","widget": tk.OptionMenu, 'data_type': str, 'values': self._all_contracts, 'width': 5},            
+            {"code_name": "timeframe","widget": tk.OptionMenu, 'data_type': str, 'values': self._all_timeframes, 'width': 3},
+            {"code_name": "balance_pct","widget": tk.Entry, 'data_type': float, 'width': 3},
+            {"code_name": "take_profit","widget": tk.Entry, 'data_type': float, 'width': 3},
+            {"code_name": "stop_loss","widget": tk.Entry, 'data_type': float, 'width': 3},
+            {"code_name": "parameters","widget": tk.Button, 'data_type': float, 'text':'Paremeters', 'bg':BG_COLOR_2, 'command': self._show_popup, 'width': 7},
+            {"code_name": "activation","widget": tk.Button, 'data_type': float, 'text':'OFF', 'bg':'darkred', 'command': self._switch_strategy, 'width': 1},
+            {"code_name": "delete","widget": tk.Button, 'data_type': float, 'text':'X', 'bg':'darkred', 'command': self._delete_row, 'width': 1},
 
         ]
 
@@ -67,11 +67,13 @@ class StrategyEditor(tk.Frame):
 
             elif base_param['widget'] == tk.Entry:
                 self.body_widgets[code_name][b_index] = tk.Entry(self._table_frame,  justify=tk.CENTER)
+#                self.body_widgets[code_name][b_index].config(width = base_param['width'])             
 
             elif base_param['widget'] == tk.Button:
                 self.body_widgets[code_name][b_index] = tk.Button(self._table_frame,  text=base_param['text'],
                                                                     bg=base_param['bg'],fg=FG_COLOR,
-                                                                    command=lambda: base_param['command'](b_index))
+                                                                    command=lambda frozen_command=base_param['command']: frozen_command(b_index))
+#                self.body_widgets[code_name][b_index].config(width = base_param['width'])
             else:
                 continue
 
@@ -80,6 +82,11 @@ class StrategyEditor(tk.Frame):
         self._body_index += 1
     
     def _delete_row(self, b_index: int):
+
+        for element in self._base_params:
+            self.body_widgets[element['code_name']][b_index].grid_forget()
+            del self.body_widgets[element['code_name']][b_index]
+        
         return
 
     def _show_popup(self, b_index: int):

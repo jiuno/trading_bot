@@ -24,11 +24,11 @@ class Root(tk.Tk):
         self.title('Trading Bicho')
         self.configure(bg=BG_COLOR)
 
-        self._left_frame = tk.Frame(self, bg=BG_COLOR)
+        self._left_frame = tk.Frame(self, bg=BG_COLOR,width=1)
         self._left_frame.pack(side = tk.LEFT)
 
         self._right_frame = tk.Frame(self, bg=BG_COLOR)
-        self._right_frame.pack(side = tk.LEFT)
+        self._right_frame.pack(side = tk.RIGHT)
 
         self._watchlist_frame = Watchlist(self.binance.contracts, self._left_frame, bg = BG_COLOR)
         self._watchlist_frame.pack(side = tk.TOP )

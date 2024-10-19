@@ -41,7 +41,7 @@ class BinanceFuturesClient:
 
         t = threading.Thread(target=self._start_ws)
 
-        t.start() # prendo y apago el websocket para tener info en tiempo real.
+        #t.start() # prendo y apago el websocket para tener info en tiempo real.
     
         logger.info("Binance Futures Client succesfully started")
 

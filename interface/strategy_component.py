@@ -42,6 +42,20 @@ class StrategyEditor(tk.Frame):
 
         ]
 
+
+        self._extra_params = {
+            "Technical": [
+                {'code_name': "ema_fast",'name':"MACD Fast Lenght",'widget':tk.Entry,'data': int}, #EMA: Exponential Moving Average
+                {'code_name': "ema_slow",'name':"MACD Slow Lenght",'widget':tk.Entry,'data': int},
+                {'code_name': "ema_signal",'name':"MACD Signal Lenght",'widget':tk.Entry,'data': int}
+
+            ],
+            "Breakout": [
+                {'code_name': "min_volume",'name':"Minimum Volume",'widget':tk.Entry,'data': float} #Minimum volume of last candle
+            ]
+        }
+
+
         for i, h in enumerate(self._headers):
             header = tk.Label(self._table_frame, text=h,bg=BG_COLOR, fg=FG_COLOR, font=BOLD_FONT)
             header.grid(row=0,column=i)
@@ -99,11 +113,38 @@ class StrategyEditor(tk.Frame):
         self._popup_window.attributes("-topmost","true")
         self._popup_window.grab_set()
 
-        self._popup_window.geometry(f'{x-80}+{y*+30}') #Donde quiero que aparezca el popup, relativo al boton.
+        #self._popup_window.geometry(f'{x-80}+{y+30}') #Donde quiero que aparezca el popup, relativo al boton.
 
         strat_selected = self.body_widgets['strategy_type_var'][b_index].get()
 
+        row_nb = 0
+
+        for param in self._extra_params[strat_selected]:
+            code_name = param['code_name']
+
+            temp_label = tk.Label(self._popup_window, bg=BG_COLOR, fg=FG_COLOR, text=param['name'], font=BOLD_FONT)
+            temp_label.grid(row=row_nb, column=0)
+
+            if param['widget'] == tk.Entry:
+                temp_input = tk.Entry(self._popup_window, bg=BG_COLOR_2, justify=tk.CENTER, fg=FG_COLOR, insertbackground=FG_COLOR)
+            else:
+                continue
+
+            temp_input.grid(row=row_nb, column=1)
+
+            row_nb += 1
+
+
+        #Validation Button
+        validation_button = tk.Button(self._popup_window, text="Validate", bg=BG_COLOR_2, fg=FG_COLOR
+                                      , command= lambda: self._validate_parameters(b_index))
+        validation_button.grid(row=row_nb, column=0, columnspan=2)
+
         return
+
+    def _validate_parameters(self,b_index:int):
+        return
+
 
     def _switch_strategy(self, b_index: int):
         return
